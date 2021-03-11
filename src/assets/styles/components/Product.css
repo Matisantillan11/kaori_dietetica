@@ -1,0 +1,26 @@
+.product_container{
+    width: 90%;
+    height: 180px;
+    border: 1px solid gray;
+    margin: 2.5% 5%;
+    border-radius: 12px;
+    display:inline-flex;
+    align-items: top;
+}
+
+.product_text--container{
+    padding: 2.5%;
+    width:85%;
+    height: 100%;
+}
+
+.product_text--container .product_text--title{margin-bottom: 2.5%;}
+.product_text--container .product_text--description{ margin-bottom: 2.5%;}
+
+.product_icons--container{
+    width: 15%;
+    padding: 0 1% 4% 0;
+    display:inline-flex;
+    justify-content: space-evenly;
+    align-items: flex-end;
+}
