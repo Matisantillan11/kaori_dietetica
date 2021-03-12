@@ -1,14 +1,18 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-import App from "./App";
+import App from "./components/App.jsx";
 import reportWebVitals from "./reportWebVitals";
 import HomePage from "./containers/HomePage";
 import MainPage from "./containers/MainPage";
 
+import firebase from "firebase/app";
+import config from "./config/config.jsx";
+firebase.initializeApp(config);
+
 ReactDOM.render(
   <React.StrictMode>
-    <MainPage />
+    <App />
   </React.StrictMode>,
   document.getElementById("root")
 );

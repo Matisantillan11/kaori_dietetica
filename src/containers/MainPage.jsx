@@ -2,6 +2,8 @@ import React from "react";
 
 import ProductList from "../components/ProductList.jsx"
 
+import {Link} from 'react-router-dom'
+
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faPlus} from '@fortawesome/free-solid-svg-icons'
 
@@ -17,9 +19,9 @@ class MainPage extends React.Component {
         </div>
 
         
-        <a className="product_buttons-new" href="/new">
+        <Link className="product_buttons-new" to="/new">
             <FontAwesomeIcon icon={faPlus} />
-        </a>
+        </Link>
 
         <div className="products__container">
             <ProductList />
