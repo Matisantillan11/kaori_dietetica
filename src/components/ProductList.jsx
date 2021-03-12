@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import firebase from "firebase/app";
-import "firebase/database";
+import "firebase/firestore";
 
 
 import Product from './Product.jsx'
@@ -17,51 +17,68 @@ class ProductList extends Component{
     }
     
     deleteProduct = (e) => {
-        e.preventDefault()
-        const deleteRef = firebase.database().ref().child("products").child(`"${this.state.productId}"`);
-        deleteRef.remove(error =>{
-            if(!error){
-                swal.fire({
-                    icon:'success',
-                    text: 'Producto eliminado correctamente'
+        const db = firebase.firestore()
+        const deleteRef = db.collection("products")
+        console.log(this.state.productId)
+        swal.fire({
+            text:`Seguro quieres eliminar el producto "${this.state.products.name}"?`,
+            showDenyButton:true,
+            confirmButtonText: '<i class="fa fa-thumbs-up"></i> Crear',
+            denyButtonText: '<i class="fa fa-thumbs-down"></i> No crear' 
+        }).then(result =>{
+            if(result.isConfirmed){
+                deleteRef.doc(this.state.productId).delete().then(()=>{
+                    swal.fire({
+                        icon:'success',
+                        text: 'Producto eliminado correctamente'
+                    })
+                    
+                }).catch(error=>{
+                    swal.fire({
+                        icon:'error',
+                        text: `Lo sentimos, no se pudo borrar tu producto. Error: ${error.message}`
+                    })
                 })
-                this.listProducts(firebase.database().ref("products"))
-            } else {
-
+                this.listProducts();
+            } else if (result.isDenied){
                 swal.fire({
                     icon:'error',
-                    text: `Lo sentimos, no se pudo borrar tu producto. Error: ${error.message}`
+                    text: 'Producto no eliminado'
                 })
             }
-        }) 
+        })
     }
 
-    listProducts = (dbref) =>{
 
-        dbref.on("child_added", (snapshot) => {
-            console.log(snapshot.key)
-            this.setState({
-            products: this.state.products.concat(snapshot.val()),
-            productId: snapshot.key,
-            loading: false,
-            error: false,
-            });
-            
-        });
-    }
+    listProducts = () =>{
+        const db = firebase.firestore()
+        const productRef = db.collection("products")
+
+        productRef.get().then(snapshot=>{
+            snapshot.forEach(product =>{
+                if(product.exists){
+                    this.setState({
+                        products: this.state.products.concat(product.data()),
+                        productId: product.id,
+                        loading: false,
+                        error: false,
+                        }); 
+                } 
+                })
+            }).catch(error => console.log(error.message))
+        }
+        
+    
     componentDidMount() {
         this.setState({
             products: [],
             loading: true,
             error: false,
         });
-    
-        const db = firebase.database()
-        const dbref = db.ref("products");
-        this.listProducts(dbref)
-        dbref.on("child_removed", () => {
-            this.listProducts(dbref)
-        })
+        
+        this.listProducts()
+        
+        
     }
 
     render(){

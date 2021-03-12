@@ -28,18 +28,16 @@ class AddProduct extends React.Component {
   }
 
   createProduct = () => {
-      alert("Uploaded");
+      
       const record = {
         description: this.state.description,
         name: this.state.name,
         price: this.state.price,
         stock: this.state.stock
       };
-      const db = firebase.database();
-      const dbref = db.ref("products");
-      const newProduct = dbref.push();
-
-      newProduct.set(record);
+      const db = firebase.firestore()
+      const addRef = db.collection("products")
+      
 
       swal.fire({
         text:`Seguro quieres crear el producto "${this.state.name}"?`,
@@ -48,12 +46,14 @@ class AddProduct extends React.Component {
         denyButtonText: '<i class="fa fa-thumbs-down"></i> No crear' 
       }).then(result =>{
         if(result.isConfirmed){
-          swal.fire({
-            icon:"success",
-            title: 'Excelente! 😁',
-            html:`El producto <strong>${this.state.name}</strong> se ha creado con exito`,
+          addRef.add(record).then(product =>{
+            swal.fire({
+              icon:"success",
+              title: 'Excelente! 😁',
+              html:`El producto <strong>${this.state.name}</strong> se ha creado con exito`,
+            })
+            window.location.href = "/product"
           })
-
         } else if (result.isDenied){
           swal.fire({
             icon:"error",
