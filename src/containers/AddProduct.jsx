@@ -42,8 +42,8 @@ class AddProduct extends React.Component {
       swal.fire({
         text:`Seguro quieres crear el producto "${this.state.name}"?`,
         showDenyButton:true,
-        confirmButtonText: '<i class="fa fa-thumbs-up"></i> Crear',
-        denyButtonText: '<i class="fa fa-thumbs-down"></i> No crear' 
+        confirmButtonText: '<i class="fa fa-thumbs-up"></i> Aceptar',
+        denyButtonText: '<i class="fa fa-thumbs-down"></i> Cancelar' 
       }).then(result =>{
         if(result.isConfirmed){
           addRef.add(record).then(product =>{
@@ -51,6 +51,7 @@ class AddProduct extends React.Component {
               icon:"success",
               title: 'Excelente! 😁',
               html:`El producto <strong>${this.state.name}</strong> se ha creado con exito`,
+              timer: 2000
             })
             window.location.href = "/product"
           })
@@ -87,7 +88,7 @@ class AddProduct extends React.Component {
                   <input onChange={this.handleChange} type="text"  name="description" className="form-control" />
                 </div>
                 <div className="form-group">
-                  <label for="price">Precio</label>
+                  <label >Precio</label>
                   <input onChange={this.handleChange} type="number"  name="price" className="form-control" />
                 </div>
                 <div className="form-group">

@@ -3,8 +3,6 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./components/App.jsx";
 import reportWebVitals from "./reportWebVitals";
-import HomePage from "./containers/HomePage";
-import MainPage from "./containers/MainPage";
 
 import firebase from "firebase/app";
 import config from "./config/config.jsx";
