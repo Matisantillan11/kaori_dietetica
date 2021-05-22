@@ -8,6 +8,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faPlus} from '@fortawesome/free-solid-svg-icons'
 
 import "../assets/styles/containers/MainPage.css";
+import initialState from "../initialState.js";
 
 class MainPage extends React.Component {
   render() {
@@ -24,7 +25,7 @@ class MainPage extends React.Component {
         </Link>
 
         <div className="products__container">
-            <ProductList />
+            <ProductList products={initialState.products}/>
         </div>
        
         

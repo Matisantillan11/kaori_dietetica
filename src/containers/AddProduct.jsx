@@ -1,65 +1,56 @@
-import React from "react";
-
+import React, {useRef, useState} from "react";
+import { useHistory } from 'react-router-dom'
 import swal from 'sweetalert2'
 import firebase from "firebase/app";
 import "firebase/database";
 
-import image from '../assets/images/select.svg'
-
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../assets/styles/containers/AddProduct.css";
-class AddProduct extends React.Component {
-  state={
-    name:'',
-    price:'',
-    stock:'',
-    description:''
+
+const AddProduct = () => {
+  
+  const form = useRef(null);
+  let history = useHistory();
+  
+  
+  const handleClick = () =>{
+    createProduct();
   }
-
-  handleChange = (e) => {
-    this.setState({
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  handleClick = e =>{
-    e.preventDefault();
-    this.createProduct();
-  }
-
-  createProduct = () => {
-      
-      const record = {
-        description: this.state.description,
-        name: this.state.name,
-        price: this.state.price,
-        stock: this.state.stock
+  
+  const createProduct = () => {
+    const formData = new FormData(form.current)
+    const record = {
+        description: formData.get('description'),
+        name: formData.get('name'),
+        price: formData.get('price'),
+        stock: formData.get('stock'),
       };
+
       const db = firebase.firestore()
       const addRef = db.collection("products")
       
 
       swal.fire({
-        text:`Seguro quieres crear el producto "${this.state.name}"?`,
+        text:`Seguro quieres crear el producto "${record.name}"?`,
         showDenyButton:true,
-        confirmButtonText: '<i class="fa fa-thumbs-up"></i> Aceptar',
+        confirmButtonText: `<i class="fa fa-thumbs-up"></i> Aceptar`,
         denyButtonText: '<i class="fa fa-thumbs-down"></i> Cancelar' 
       }).then(result =>{
         if(result.isConfirmed){
-          addRef.add(record).then(product =>{
+          addRef.add(record).then(() =>{
             swal.fire({
               icon:"success",
               title: 'Excelente! 😁',
-              html:`El producto <strong>${this.state.name}</strong> se ha creado con exito`,
+              html:`El producto <strong>${record.name}</strong> se ha creado con exito`,
               timer: 2000
             })
-            window.location.href = "/product"
+            history.push("/products");
           })
         } else if (result.isDenied){
           swal.fire({
             icon:"error",
             title: 'Que lastima! 😔',
-            html:`El producto <strong>${this.state.name}</strong> no se ha creado.`,
+            html:`El producto <strong>${record.name}</strong> no se ha creado.`,
           })
         }
       })
@@ -68,44 +59,51 @@ class AddProduct extends React.Component {
     
 
 
-  render() {
+  
     return (
+      <>
       <div className="main">
-        <div className="form">
-          <h3 className="form--title">Nuevo producto</h3>
-          <div className="row">
-            <div className="col-6">
-              <img className="select-img" src={image} alt="animation" />
-            </div>
-            <div className="col-6">
-              <form>
+          <h3 className="title">Nuevo producto</h3>
+          <div className="main_container">
+
+            <div className="form_container">
+              <form ref={form}>
                 <div className="form-group">
                   <label>Nombre</label>
-                  <input onChange={this.handleChange} type="text" name="name"  className="form-control" />
+                  <input type="text" name="name"  className="form-control" />
                 </div>
                 <div className="form-group">
                   <label>Descripción</label>
-                  <input onChange={this.handleChange} type="text"  name="description" className="form-control" />
+                  <input type="text"  name="description" className="form-control" maxLength = "100" />
                 </div>
                 <div className="form-group">
                   <label >Precio</label>
-                  <input onChange={this.handleChange} type="number"  name="price" className="form-control" />
+                  <input type="number"  name="price" className="form-control" />
                 </div>
                 <div className="form-group">
                   <label>Stock</label>
-                  <input onChange={this.handleChange} type="number"  name="stock" className="form-control stock" />
-                  {/*  {this.props.error && (
-                    <p className="text-danger">{this.props.error.message}</p>
-                  )} */}
+                  <input type="number"  name="stock" className="form-control stock" />
                 </div>
-                <button className="create-button" onClick={this.handleClick}>Crear Producto</button>
-                <button className="prev-button">Vista previa</button>
               </form>
             </div>
+
+            {/* <h4>Vista previa</h4>
+            <div className="real-time">
+                  <p className="real-time-title"></p>
+                  <p className="real-time-description"></p>
+                  <p className="real-time-price"></p>
+                  <p className="real-time-stock"></p>
+              <div className="product_icons--container">
+                <FontAwesomeIcon icon={faTrash}/>
+                <FontAwesomeIcon icon={faEdit} />
+              </div>
+            </div> */}
           </div>
-        </div>
+
+          <button className="create-button" onClick={()=>handleClick()}>Crear Producto</button>
+          
       </div>
+      </>
     );
-  }
 }
 export default AddProduct;
